@@ -1,0 +1,35 @@
+[
+    {
+      "id": 1,
+      "name": "Spaghetti Bolognese",
+      "ingredients": ["300g spaghetti", "500g minced beef", "1 Jar tomato sauce", "3 tomatoes", "1 lettuce"],
+      "instructions": "Cook spaghetti. Brown the beef. Add sauce.",
+      "tags": ["pasta", "main course"],
+      "image": "assets/images/spaghetti.jpg",
+      "preparationTime": "10 mins",
+      "cookingTime": "20 mins",
+      "steps": ["Cook spaghetti", "Brown the beef", "Add sauce"]
+    },
+    {
+      "id": 2,
+      "name": "Stir Fry",
+      "ingredients": ["chicken", "1 lettuce", "3 tomatoes", "2 cucumber"],
+      "instructions": "Grill chicken. Chop vegetables. Mix together.",
+      "tags": ["salad", "main course"],
+      "image": "assets/images/stirfry.jpg",
+      "preparationTime": "15 mins",
+      "cookingTime": "10 mins",
+      "steps": ["Grill chicken", "Chop vegetables", "Mix together"]
+    },
+    {
+      "id": 3,
+      "name": "Chilli Con Carne",
+      "ingredients": ["spaghetti", "500g minced beef", "1 Jar tomato sauce", "3 tomatoes", "1 lettuce"],
+      "instructions": "Grill chicken. Chop vegetables. Mix together.",
+      "tags": ["salad", "main course"],
+      "image": "assets/images/stirfry.jpg",
+      "preparationTime": "15 mins",
+      "cookingTime": "10 mins",
+      "steps": ["Grill chicken", "Chop vegetables", "Mix together"]
+    }
+  ]
