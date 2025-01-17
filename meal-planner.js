@@ -94,12 +94,23 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
   const mealPlan = JSON.parse(localStorage.getItem("mealPlan")) || {};
 
+  let recipes = [];
+
   function initializeMealPlanner() {
     plannerContainer.innerHTML = "";
     const isMobileView = window.matchMedia("(max-width: 767px)").matches;
 
-    days.forEach((day, index) => {
-      plannerContainer.innerHTML += `
+    // Load recipes from the database
+    db.collection("recipes")
+      .get()
+      .then((querySnapshot) => {
+        recipes = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        days.forEach((day, index) => {
+          plannerContainer.innerHTML += `
           <div class="col-md-4 mb-3">
             <div class="card">
               <div class="card-header" id="heading${index}">
@@ -113,70 +124,111 @@ document.addEventListener("DOMContentLoaded", () => {
                 </h5>
               </div>
               <div id="collapse${index}" class="collapse ${
-        isMobileView ? "" : "show"
-      }" aria-labelledby="heading${index}" data-bs-parent="#meal-planner">
+            isMobileView ? "" : "show"
+          }" aria-labelledby="heading${index}" data-bs-parent="#meal-planner">
                 <div class="card-body">
-                  ${createMealSelect(day, "breakfast")}
-                  ${createMealSelect(day, "lunch")}
-                  ${createMealSelect(day, "dinner")}
+                  ${createMealSelect(day, "breakfast", recipes)}
+                  ${createMealSelect(day, "lunch", recipes)}
+                  ${createMealSelect(day, "dinner", recipes)}
                 </div>
               </div>
             </div>
           </div>
         `;
-    });
+        });
 
-    document.querySelectorAll(".meal-select").forEach((select) => {
-      select.addEventListener("change", handleMealSelectChange);
-    });
+        document.querySelectorAll(".meal-select").forEach((select) => {
+          select.addEventListener("change", handleMealSelectChange);
+        });
+
+        document.querySelectorAll(".view-recipe-btn").forEach((button) => {
+          button.addEventListener("click", handleViewRecipeClick);
+        });
+      })
+      .catch((error) => {
+        console.error("Error loading recipes: ", error);
+        showAlert("Error loading recipes: " + error.message, "danger");
+      });
   }
 
-  function createMealSelect(day, meal) {
+  function handleViewRecipeClick(e) {
+    const recipeId = e.target.dataset.recipeId;
+    const selectedRecipe = recipes.find((recipe) => recipe.id === recipeId);
+
+    if (selectedRecipe) {
+      recipeModalBody.innerHTML = `
+        <h3>${selectedRecipe.name}</h3>
+        <p><strong>Preparation Time:</strong> ${
+          selectedRecipe.preparationTime || "N/A"
+        }</p>
+        <p><strong>Cooking Time:</strong> ${
+          selectedRecipe.cookingTime || "N/A"
+        }</p>
+        <h5>Ingredients:</h5>
+        <ul>
+          ${selectedRecipe.ingredients
+            .map((ingredient) => `<li>${ingredient}</li>`)
+            .join("")}
+        </ul>
+        <h5>Steps:</h5>
+        <ol>
+          ${selectedRecipe.steps.map((step) => `<li>${step}</li>`).join("")}
+        </ol>
+      `;
+      recipeModal.show();
+    } else {
+      console.error("Recipe not found");
+    }
+  }
+
+  function createMealSelect(day, meal, recipes) {
     const selectedRecipe = mealPlan[day] && mealPlan[day][meal];
     return `
-        <h5 class="py-2">${capitalize(meal)}</h5>
-        <select class="form-select meal-select" data-day="${day}" data-meal="${meal}">
-          <option value="">Select a recipe</option>
-          ${
-            selectedRecipe
-              ? `<option value="${selectedRecipe.id}" selected>${selectedRecipe.name}</option>`
-              : ""
-          }
-        </select>
-        <button class="btn btn-outline-dark btn-sm py-1 mb-2 mt-2 view-recipe-btn" data-recipe-id="${
-          selectedRecipe ? selectedRecipe.id : ""
-        }" ${selectedRecipe ? "" : "disabled"}>
-          View Recipe
-        </button>
-      `;
+    <h5 class="py-2">${capitalize(meal)}</h5>
+    <select class="form-select meal-select" data-day="${day}" data-meal="${meal}">
+      <option value="">Select a recipe</option>
+      ${recipes
+        .map(
+          (recipe) =>
+            `<option value="${recipe.id}" ${
+              selectedRecipe && selectedRecipe.id === recipe.id
+                ? "selected"
+                : ""
+            }>${recipe.name}</option>`
+        )
+        .join("")}
+    </select>
+    <button class="btn btn-outline-dark btn-sm py-1 mb-2 mt-2 view-recipe-btn" data-meal="${meal}" data-recipe-id="${
+      selectedRecipe ? selectedRecipe.id : ""
+    }" ${selectedRecipe ? "" : "disabled"}>
+      View Recipe
+    </button>
+  `;
   }
 
   function handleMealSelectChange(e) {
     const day = e.target.getAttribute("data-day");
     const meal = e.target.getAttribute("data-meal");
     const recipeId = e.target.value;
-    const selectedRecipe = Object.values(mealPlan)
-      .flatMap((dayPlan) => Object.values(dayPlan))
-      .find((recipe) => recipe.id == recipeId);
 
     if (!mealPlan[day]) {
       mealPlan[day] = {};
     }
 
     if (recipeId) {
+      const selectedRecipe = recipes.find((recipe) => recipe.id === recipeId);
       mealPlan[day][meal] = selectedRecipe;
     } else {
       delete mealPlan[day][meal];
     }
 
     localStorage.setItem("mealPlan", JSON.stringify(mealPlan));
-    saveMealPlanToFirebase(mealPlan);
 
     const viewButton = e.target.parentElement.querySelector(
       `.view-recipe-btn[data-meal="${meal}"]`
     );
-    if (selectedRecipe) {
-      viewButton.dataset.recipeId = selectedRecipe.id;
+    if (recipeId) {
+      viewButton.dataset.recipeId = recipeId;
       viewButton.disabled = false;
     } else {
       viewButton.disabled = true;
