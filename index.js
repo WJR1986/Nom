@@ -94,38 +94,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     recipes.forEach((recipe) => {
       const recipeCard = `
-                <div class="col-md-4">
-                  <div class="card">
-                    <div class="card-img-top-container">
-                      <img src="${recipe.image}" class="card-img-top" alt="${
+              <div class="col-md-4">
+                <div class="card">
+                  <div class="card-img-top-container">
+                    <img src="${
+                      recipe.image
+                    }" class="card-img-top img-fluid recipe-image" alt="${
         recipe.name
       }">
-                      <button class="btn btn-danger btn-sm delete-recipe-btn" data-recipe-id="${
-                        recipe.id
-                      }" style="position: absolute; top: 5px; right: 5px;">&times;</button>
-                    </div>
-                    <div class="card-body">
-                      <h5 class="card-title">${recipe.name}</h5>
-                      <p class="card-text">Ingredients: ${recipe.ingredients.join(
-                        ", "
-                      )}</p>
-                      <button class="btn btn-primary view-recipe-btn" data-recipe-id="${
-                        recipe.id
-                      }">
-                        View Recipe
-                      </button>
-                      <button class="btn btn-success add-to-planner-btn" data-recipe-id="${
-                        recipe.id
-                      }">
-                        Add to Meal Planner
-                      </button>
-                    </div>
+                    <button class="btn btn-danger btn-sm delete-recipe-btn" data-recipe-id="${
+                      recipe.id
+                    }" style="position: absolute; top: 5px; right: 5px;">&times;</button>
+                  </div>
+                  <div class="card-body">
+                    <h5 class="card-title">${recipe.name}</h5>
+                    <p class="card-text">Ingredients: ${recipe.ingredients.join(
+                      ", "
+                    )}</p>
+                    <button class="btn btn-outline-dark view-recipe-btn" data-recipe-id="${
+                      recipe.id
+                    }">
+                      View Recipe
+                    </button>
+                    <button class="btn btn-success add-to-planner-btn" data-recipe-id="${
+                      recipe.id
+                    }">
+                      Add to Planner
+                    </button>
                   </div>
                 </div>
-              `;
+              </div>
+            `;
       recipesContainer.innerHTML += recipeCard;
     });
-    console.log("Displayed recipes:", recipes); // Debugging log
   }
 
   // Recipe modal handling
@@ -239,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="save-day-meal-btn">Save</button>
+                <button type="button" class="btn btn-outline-dark" id="save-day-meal-btn">Save</button>
               </div>
             </div>
           </div>

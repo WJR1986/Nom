@@ -1,0 +1,25 @@
+.recipe-image {
+  max-width: 100%;
+  max-height: 300px; /* Adjust the max-height as needed */
+  object-fit: contain; /* This ensures the entire image fits within the area without being cropped */
+}
+
+/* Change the color of non-active nav links */
+.nav-link {
+  color: darkslategray; /* Change this to your desired color */
+}
+
+/* Hover color */
+.nav-link:hover {
+  color: black; /* Change this to your desired color */
+}
+
+/* Ensure the active nav link retains its default or desired styling */
+.nav-link.active {
+  color: #495057; /* Change this to your desired active color */
+}
+
+/* Hover color */
+.nav-link.active:hover {
+  color: darkslategray; /* Change this to your desired color */
+}

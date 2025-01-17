@@ -19,7 +19,7 @@
     <div class="container">
         <header class="d-flex flex-column align-items-center py-3">
             <a class="navbar-brand pb-2" href="#">Will's Recipe App</a>
-            <ul class="nav nav-pills">
+            <ul class="nav nav-tabs">
                 <li class="nav-item"><a href="index.html" class="nav-link" aria-current="page">Home</a></li>
                 <li class="nav-item"><a href="add-recipe.html" class="nav-link active">Add Recipe</a></li>
                 <li class="nav-item"><a href="meal-planner.html" class="nav-link">Meal Planner</a></li>
@@ -42,12 +42,36 @@
                 <input type="url" class="form-control" id="recipe-image" required>
             </div>
             <div class="mb-3">
-                <label for="recipe-ingredients" class="form-label">Ingredients (comma separated)</label>
-                <input type="text" class="form-control" id="recipe-ingredients" required>
+                <label for="recipe-ingredients" class="form-label">Ingredients</label>
+                <div id="ingredients-container">
+                    <div class="input-group mb-2">
+                        <input type="number" class="form-control ingredient-quantity" placeholder="Quantity" required>
+                        <select class="form-select ingredient-unit">
+                            <option value="">Unit</option>
+                            <option value="g">grams</option>
+                            <option value="ml">mls</option>
+                            <option value="litres">litres</option>
+                            <option value="cups">cups</option>
+                            <option value="tbsp">tbsp</option>
+                            <option value="tsp">tsp</option>
+                            <option value="pcs">pieces</option>
+                        </select>
+                        <input type="text" class="form-control ingredient-input" placeholder="Enter ingredient"
+                            required>
+                        <button type="button" class="btn btn-outline-secondary remove-ingredient-btn">&times;</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-secondary" id="add-ingredient-btn">Add Ingredient</button>
             </div>
             <div class="mb-3">
-                <label for="recipe-steps" class="form-label">Steps (comma separated)</label>
-                <input type="text" class="form-control" id="recipe-steps" required>
+                <label for="recipe-steps" class="form-label">Steps</label>
+                <div id="steps-container">
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control step-input" placeholder="Enter step" required>
+                        <button type="button" class="btn btn-outline-secondary remove-step-btn">&times;</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline-secondary" id="add-step-btn">Add Step</button>
             </div>
             <div class="mb-3">
                 <label for="preparation-time" class="form-label">Preparation Time</label>
@@ -57,7 +81,7 @@
                 <label for="cooking-time" class="form-label">Cooking Time</label>
                 <input type="text" class="form-control" id="cooking-time">
             </div>
-            <button type="submit" class="btn btn-primary">Add Recipe</button>
+            <button type="submit" class="btn btn-outline-dark">Add Recipe</button>
         </form>
     </div>
 

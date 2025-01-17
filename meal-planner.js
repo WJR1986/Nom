@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function createMealSelect(day, meal) {
     const selectedRecipe = mealPlan[day] && mealPlan[day][meal];
     return `
-        <h5>${capitalize(meal)}</h5>
+        <h5 class="py-2">${capitalize(meal)}</h5>
         <select class="form-select meal-select" data-day="${day}" data-meal="${meal}">
           <option value="">Select a recipe</option>
           ${
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
               : ""
           }
         </select>
-        <button class="btn btn-info mt-2 view-recipe-btn" data-recipe-id="${
+        <button class="btn btn-outline-dark btn-sm py-1 mb-2 mt-2 view-recipe-btn" data-recipe-id="${
           selectedRecipe ? selectedRecipe.id : ""
         }" ${selectedRecipe ? "" : "disabled"}>
           View Recipe
@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const dayAndMealSelectionModalFooter = `
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="save-day-meal-btn">Save</button>
+        <button type="button" class="btn btn-outline-dark btn-sm" id="save-day-meal-btn">Save</button>
       `;
 
     const dayAndMealSelectionModal = createModal(
@@ -261,14 +261,19 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.values(mealPlan).forEach((meals) => {
       Object.values(meals).forEach((recipe) => {
         recipe.ingredients.forEach((ingredient) => {
-          const match = ingredient.match(/^(\d+(\.\d+)?)?\s*(.*)$/);
+          const match = ingredient.match(/^(\d+(\.\d+)?)([a-zA-Z]*)\s+(.*)$/);
           if (match) {
-            const quantity = match[1] ? parseFloat(match[1]) : 1;
-            const ingredientName = match[3];
+            const quantity = parseFloat(match[1].trim());
+            const unit = match[3].trim();
+            const ingredientName = match[4].trim();
             if (shoppingList[ingredientName]) {
-              shoppingList[ingredientName] += quantity;
+              if (shoppingList[ingredientName][unit]) {
+                shoppingList[ingredientName][unit] += quantity;
+              } else {
+                shoppingList[ingredientName][unit] = quantity;
+              }
             } else {
-              shoppingList[ingredientName] = quantity;
+              shoppingList[ingredientName] = { [unit]: quantity };
             }
           } else {
             console.error("Ingredient format not recognized:", ingredient);
@@ -277,22 +282,31 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
+    const aggregatedShoppingList = Object.entries(shoppingList).map(
+      ([ingredient, quantities]) => {
+        const formattedQuantities = Object.entries(quantities)
+          .map(([unit, amount]) => `${amount} ${unit}`)
+          .join(", ");
+        return { ingredient, quantity: formattedQuantities };
+      }
+    );
+
     shoppingListModalBody.innerHTML = `
-        <h5>Shopping List</h5>
-        <div class="list-group">
-          ${Object.entries(shoppingList)
-            .map(
-              ([ingredient, quantity]) => `
-            <div class="list-group-item d-flex justify-content-between align-items-center">
-              <span>${ingredient}</span>
-              <span class="badge bg-primary rounded-pill">${quantity}</span>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-        <button id="copy-shopping-list-btn" class="btn btn-secondary mt-3">Copy to Clipboard</button>
-      `;
+      <h5>Shopping List</h5>
+      <div class="list-group">
+        ${aggregatedShoppingList
+          .map(
+            ({ ingredient, quantity }) => `
+          <div class="list-group-item d-flex justify-content-between align-items-center">
+            <span>${ingredient}</span>
+            <span class="badge bg-primary rounded-pill">${quantity}</span>
+          </div>
+        `
+          )
+          .join("")}
+      </div>
+      <button id="copy-shopping-list-btn" class="btn btn-secondary mt-3">Copy to Clipboard</button>
+    `;
 
     const shoppingListModal = new bootstrap.Modal(shoppingListModalElement);
     shoppingListModal.show();
@@ -302,8 +316,8 @@ document.addEventListener("DOMContentLoaded", () => {
       .addEventListener("click", () => {
         const shoppingListText =
           "Shopping List\n\n" +
-          Object.entries(shoppingList)
-            .map(([ingredient, quantity]) => `${ingredient}: ${quantity}`)
+          aggregatedShoppingList
+            .map(({ ingredient, quantity }) => `${ingredient}: ${quantity}`)
             .join("\n");
 
         navigator.clipboard
@@ -324,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     const modalFooter = `
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="save-meal-plan-name-btn">Save</button>
+        <button type="button" class="btn btn-outline-dark btn-sm" id="save-meal-plan-name-btn">Save</button>
       `;
 
     const nameMealPlanModal = createModal(
@@ -388,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     const modalFooter = `
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="load-meal-plan-btn">Load Meal Plan</button>
+        <button type="button" class="btn btn-outline-dark btn-sm" id="load-meal-plan-btn">Load Meal Plan</button>
         <button type="button" class="btn btn-danger" id="delete-meal-plan-btn">Delete Meal Plan</button>
       `;
 
