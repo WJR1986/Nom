@@ -30,11 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  addIngredientBtn.addEventListener("click", () => {
+  function addIngredientInputGroup() {
+    console.log("Adding ingredient input group");
     const ingredientInputGroup = document.createElement("div");
     ingredientInputGroup.className = "input-group mb-2";
     ingredientInputGroup.innerHTML = `
-      <input type="number" class="form-control ingredient-quantity" placeholder="Quantity" required>
+      <input type="text" class="form-control ingredient-quantity" placeholder="Quantity" required>
       <select class="form-select ingredient-unit">
         <option value="">Unit</option>
         <option value="g">grams</option>
@@ -46,9 +47,15 @@ document.addEventListener("DOMContentLoaded", () => {
         <option value="pcs">pieces</option>
       </select>
       <input type="text" class="form-control ingredient-input" placeholder="Enter ingredient" required>
+      <input type="text" class="form-control ingredient-notes" placeholder="Notes (e.g., chopped)">
       <button type="button" class="btn btn-outline-secondary remove-ingredient-btn">&times;</button>
     `;
     ingredientsContainer.appendChild(ingredientInputGroup);
+  }
+
+  addIngredientBtn.addEventListener("click", () => {
+    console.log("Add Ingredient button clicked");
+    addIngredientInputGroup();
   });
 
   addStepBtn.addEventListener("click", () => {
@@ -87,7 +94,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const quantity = document.querySelectorAll(".ingredient-quantity")[index]
         .value;
       const unit = document.querySelectorAll(".ingredient-unit")[index].value;
-      return `${quantity} ${unit} ${input.value}`.trim();
+      const notes = document.querySelectorAll(".ingredient-notes")[index].value;
+      return `${quantity} ${unit} ${input.value}${
+        notes ? `, ${notes}` : ""
+      }`.trim();
     });
     const steps = Array.from(document.querySelectorAll(".step-input")).map(
       (input) => input.value
@@ -109,23 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(() => {
           showAlert("Recipe added successfully!", "success");
           addRecipeForm.reset();
-          ingredientsContainer.innerHTML = `
-            <div class="input-group mb-2">
-              <input type="number" class="form-control ingredient-quantity" placeholder="Quantity" required>
-              <select class="form-select ingredient-unit">
-                <option value="">Unit</option>
-                <option value="g">grams</option>
-                <option value="ml">mls</option>
-                <option value="litres">litres</option>
-                <option value="cups">cups</option>
-                <option value="tbsp">tbsp</option>
-                <option value="tsp">tsp</option>
-                <option value="pcs">pieces</option>
-              </select>
-              <input type="text" class="form-control ingredient-input" placeholder="Enter ingredient" required>
-              <button type="button" class="btn btn-outline-secondary remove-ingredient-btn">&times;</button>
-            </div>
-          `;
+          ingredientsContainer.innerHTML = ""; // Clear the container
+          addIngredientInputGroup(); // Add one initial ingredient input group
           stepsContainer.innerHTML = `
             <div class="input-group mb-2">
               <input type="text" class="form-control step-input" placeholder="Enter step" required>
@@ -157,5 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
       alertContainer.classList.add("hide");
       setTimeout(() => alertContainer.remove(), 500);
     }, 5000);
+  }
+
+  // Add one initial ingredient input group on page load
+  if (ingredientsContainer.children.length === 0) {
+    addIngredientInputGroup();
   }
 });

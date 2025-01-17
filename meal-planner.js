@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="card-header" id="heading${index}">
                 <h5 class="mb-0">
                   <button class="btn btn-link ${
-                    isMobileView ? "" : "d-none"
+                    isMobileView ? "custom-mobile-color" : "d-none"
                   }" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="true" aria-controls="collapse${index}">
                     ${day}
                   </button>
@@ -307,25 +307,38 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 
+  function normalizeIngredientName(name) {
+    // Remove descriptors like "crushed", "grated", etc.
+    return name.replace(/,.*$/, "").trim();
+  }
+
+  function parseQuantity(quantity) {
+    // Handle ranges and convert to a single number (average)
+    if (quantity.includes("-")) {
+      const [min, max] = quantity.split("-").map(parseFloat);
+      return (min + max) / 2;
+    }
+    return parseFloat(quantity);
+  }
+
   function generateShoppingList() {
     const shoppingList = {};
 
     Object.values(mealPlan).forEach((meals) => {
       Object.values(meals).forEach((recipe) => {
         recipe.ingredients.forEach((ingredient) => {
-          const match = ingredient.match(/^(\d+(\.\d+)?)([a-zA-Z]*)\s+(.*)$/);
+          const match = ingredient.match(
+            /^(\d+(\.\d+)?(-\d+(\.\d+)?)?)\s*([a-zA-Z]*)\s+(.*)$/
+          );
           if (match) {
-            const quantity = parseFloat(match[1].trim());
-            const unit = match[3].trim();
-            const ingredientName = match[4].trim();
-            if (shoppingList[ingredientName]) {
-              if (shoppingList[ingredientName][unit]) {
-                shoppingList[ingredientName][unit] += quantity;
-              } else {
-                shoppingList[ingredientName][unit] = quantity;
-              }
+            const quantity = parseQuantity(match[1].trim());
+            const unit = match[5].trim();
+            const ingredientName = normalizeIngredientName(match[6].trim());
+            const key = `${ingredientName} ${unit}`.trim();
+            if (shoppingList[key]) {
+              shoppingList[key] += quantity;
             } else {
-              shoppingList[ingredientName] = { [unit]: quantity };
+              shoppingList[key] = quantity;
             }
           } else {
             console.error("Ingredient format not recognized:", ingredient);
@@ -335,16 +348,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const aggregatedShoppingList = Object.entries(shoppingList).map(
-      ([ingredient, quantities]) => {
-        const formattedQuantities = Object.entries(quantities)
-          .map(([unit, amount]) => `${amount} ${unit}`)
-          .join(", ");
-        return { ingredient, quantity: formattedQuantities };
+      ([ingredient, quantity]) => {
+        return { ingredient, quantity: quantity.toString() };
       }
     );
 
     shoppingListModalBody.innerHTML = `
-      <h5>Shopping List</h5>
       <div class="list-group">
         ${aggregatedShoppingList
           .map(

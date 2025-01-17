@@ -12,13 +12,12 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-
 </head>
 
 <body>
     <div class="container">
         <header class="d-flex flex-column align-items-center py-3">
-            <a class="navbar-brand pb-2" href="#">Will's Recipe App</a>
+            <img src="assets/images/nom.png" alt="Logo" class="img-fluid mb-2 logo-pop-in" style="max-width: 200px;">
             <ul class="nav nav-tabs">
                 <li class="nav-item"><a href="index.html" class="nav-link" aria-current="page">Home</a></li>
                 <li class="nav-item"><a href="add-recipe.html" class="nav-link active">Add Recipe</a></li>
@@ -45,7 +44,7 @@
                 <label for="recipe-ingredients" class="form-label">Ingredients</label>
                 <div id="ingredients-container">
                     <div class="input-group mb-2">
-                        <input type="number" class="form-control ingredient-quantity" placeholder="Quantity" required>
+                        <input type="text" class="form-control ingredient-quantity" placeholder="Quantity" required>
                         <select class="form-select ingredient-unit">
                             <option value="">Unit</option>
                             <option value="g">grams</option>
@@ -58,6 +57,7 @@
                         </select>
                         <input type="text" class="form-control ingredient-input" placeholder="Enter ingredient"
                             required>
+                        <input type="text" class="form-control ingredient-notes" placeholder="Notes (e.g., chopped)">
                         <button type="button" class="btn btn-outline-secondary remove-ingredient-btn">&times;</button>
                     </div>
                 </div>

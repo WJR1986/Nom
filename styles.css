@@ -1,6 +1,6 @@
 .recipe-image {
   max-width: 100%;
-  max-height: 300px; /* Adjust the max-height as needed */
+  max-height: 250px; /* Adjust the max-height as needed */
   object-fit: contain; /* This ensures the entire image fits within the area without being cropped */
 }
 
@@ -22,4 +22,30 @@
 /* Hover color */
 .nav-link.active:hover {
   color: darkslategray; /* Change this to your desired color */
+}
+
+/* Mobile meal planner view font colour */
+@media (max-width: 767px) {
+  .btn-link.custom-mobile-color {
+    color: black; /* Change this to your desired color */
+    text-decoration: none;
+  }
+}
+/* Logo animation */
+@keyframes popIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.logo-pop-in {
+  animation: popIn 0.5s ease-out;
 }
