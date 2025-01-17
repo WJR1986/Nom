@@ -488,54 +488,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showSavedMealPlanModal(mealPlan) {
     const savedMealPlanModalBody = `
-    ${Object.entries(mealPlan)
-      .map(
-        ([day, meals]) => `
-      <h5>${day}</h5>
-      ${Object.entries(meals)
-        .map(([meal, recipe]) => {
-          const uniqueId = `${day}-${meal}-${recipe.id}`;
-          return `
-              <div class="card mb-2">
-                <div class="card-header" id="heading${uniqueId}">
-                  <h5 class="mb-0">
-                    <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${uniqueId}" aria-expanded="true" aria-controls="collapse${uniqueId}">
-                      ${capitalize(meal)}: ${recipe.name}
-                    </button>
-                  </h5>
-                </div>
-                <div id="collapse${uniqueId}" class="collapse" aria-labelledby="heading${uniqueId}" data-bs-parent="#savedMealPlanModal">
-                  <div class="card-body">
-                    <p><strong>Preparation Time:</strong> ${
-                      recipe.preparationTime || "N/A"
-                    }</p>
-                    <p><strong>Cooking Time:</strong> ${
-                      recipe.cookingTime || "N/A"
-                    }</p>
-                    <h5>Ingredients:</h5>
-                    <ul>
-                      ${recipe.ingredients
-                        .map((ingredient) => `<li>${ingredient}</li>`)
-                        .join("")}
-                    </ul>
-                    <h5>Steps:</h5>
-                    <ol>
-                      ${recipe.steps.map((step) => `<li>${step}</li>`).join("")}
-                    </ol>
-                  </div>
-                </div>
-              </div>
-            `;
-        })
-        .join("")}
-    `
-      )
-      .join("")}
-  `;
+        ${Object.entries(mealPlan)
+          .map(
+            ([day, meals]) => `
+          <h5>${day}</h5>
+          ${Object.entries(meals)
+            .map(
+              ([meal, recipe]) => `
+            <p><strong>${capitalize(meal)}:</strong> ${recipe.name}</p>
+          `
+            )
+            .join("")}
+        `
+          )
+          .join("")}
+      `;
 
     const savedMealPlanModalFooter = `
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-  `;
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      `;
 
     const savedMealPlanModal = createModal(
       "savedMealPlanModal",
@@ -637,13 +608,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    generateShoppingListBtn.addEventListener("click", () =>
-      generateShoppingList(
-        mealPlan,
-        shoppingListModalBody,
-        shoppingListModalElement
-      )
-    );
+    generateShoppingListBtn.addEventListener("click", generateShoppingList);
 
     if (deletePlanBtn) {
       deletePlanBtn.addEventListener("click", () => {

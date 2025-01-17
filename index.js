@@ -1,33 +1,87 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // Your Firebase config object
+  const firebaseConfig = {
+    apiKey: "AIzaSyDuVh-xD3Hf1Xzcbbis_9LebyVVFYaVf8c",
+    authDomain: "recipes-4872e.firebaseapp.com",
+    projectId: "recipes-4872e",
+    storageBucket: "recipes-4872e.appspot.com",
+    messagingSenderId: "758237483981",
+    appId: "1:758237483981:web:654888328a83b0e8536a84",
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const auth = firebase.auth();
+
+  const signInModalElement = document.getElementById("signInModal");
+  const signInForm = document.getElementById("sign-in-form");
   const searchBar = document.getElementById("search-bar");
   const searchButton = document.getElementById("search-button");
   const recipesContainer = document.getElementById("recipes-container");
 
   let fetchedRecipes = [];
 
-  if (searchBar && searchButton && recipesContainer) {
-    // Fetch recipes from JSON file
-    fetch("recipes.json")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Fetched recipes:", data); // Debugging log
-        fetchedRecipes = data;
-        displayRecipes(data);
+  // Show sign-in modal if user is not authenticated
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      console.log("User is signed in:", user);
+      fetchRecipes();
+    } else {
+      console.log("No user is signed in");
+      const signInModal = new bootstrap.Modal(signInModalElement);
+      signInModal.show();
+    }
+  });
 
-        searchButton.addEventListener("click", () => {
-          const keyword = searchBar.value.toLowerCase();
-          const filteredRecipes = fetchedRecipes.filter(
-            (recipe) =>
-              recipe.name.toLowerCase().includes(keyword) ||
-              recipe.ingredients.some((ing) =>
-                ing.toLowerCase().includes(keyword)
-              )
-          );
-          console.log("Filtered recipes:", filteredRecipes); // Debugging log
-          displayRecipes(filteredRecipes);
-        });
+  signInForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then(() => {
+        console.log("User signed in successfully");
+        const signInModal = bootstrap.Modal.getInstance(signInModalElement);
+        signInModal.hide();
+        fetchRecipes();
       })
-      .catch((error) => console.error("Error fetching recipes:", error));
+      .catch((error) => {
+        console.error("Error signing in:", error);
+        alert("Error signing in: " + error.message);
+      });
+  });
+
+  function fetchRecipes() {
+    if (searchBar && searchButton && recipesContainer) {
+      // Fetch recipes from Firestore
+      db.collection("recipes")
+        .get()
+        .then((querySnapshot) => {
+          fetchedRecipes = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          console.log("Fetched recipes:", fetchedRecipes); // Debugging log
+          displayRecipes(fetchedRecipes);
+
+          searchButton.addEventListener("click", () => {
+            const keyword = searchBar.value.toLowerCase();
+            const filteredRecipes = fetchedRecipes.filter(
+              (recipe) =>
+                recipe.name.toLowerCase().includes(keyword) ||
+                recipe.ingredients.some((ing) =>
+                  ing.toLowerCase().includes(keyword)
+                )
+            );
+            console.log("Filtered recipes:", filteredRecipes); // Debugging log
+            displayRecipes(filteredRecipes);
+          });
+        })
+        .catch((error) => console.error("Error fetching recipes:", error));
+    }
   }
 
   // Display recipes
@@ -42,9 +96,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const recipeCard = `
                 <div class="col-md-4">
                   <div class="card">
-                    <img src="${recipe.image}" class="card-img-top" alt="${
+                    <div class="card-img-top-container">
+                      <img src="${recipe.image}" class="card-img-top" alt="${
         recipe.name
       }">
+                      <button class="btn btn-danger btn-sm delete-recipe-btn" data-recipe-id="${
+                        recipe.id
+                      }" style="position: absolute; top: 5px; right: 5px;">&times;</button>
+                    </div>
                     <div class="card-body">
                       <h5 class="card-title">${recipe.name}</h5>
                       <p class="card-text">Ingredients: ${recipe.ingredients.join(
@@ -126,7 +185,28 @@ document.addEventListener("DOMContentLoaded", () => {
           showDayAndMealSelectionModal(selectedRecipe, mealPlan);
         }
       }
+
+      if (e.target.classList.contains("delete-recipe-btn")) {
+        const recipeId = e.target.dataset.recipeId;
+        console.log("Delete Recipe button clicked, recipeId:", recipeId); // Debugging log
+        if (confirm("Are you sure you want to delete this recipe?")) {
+          deleteRecipe(recipeId);
+        }
+      }
     });
+  }
+
+  function deleteRecipe(recipeId) {
+    db.collection("recipes")
+      .doc(recipeId)
+      .delete()
+      .then(() => {
+        console.log("Recipe successfully deleted!");
+        fetchRecipes(); // Refresh the list of recipes
+      })
+      .catch((error) => {
+        console.error("Error removing recipe: ", error);
+      });
   }
 
   // Show day and meal selection modal

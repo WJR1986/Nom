@@ -14,14 +14,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const db = firebase.firestore();
   const auth = firebase.auth();
 
-  // Sign in anonymously
-  auth.signInAnonymously().catch((error) => {
-    console.error("Error signing in anonymously:", error);
+  const addRecipeForm = document.getElementById("add-recipe-form");
+  const signInMessage = document.getElementById("sign-in-message");
+  const recipeImageInput = document.getElementById("recipe-image");
+
+  // Check if user is signed in
+  auth.onAuthStateChanged((user) => {
+    if (user) {
+      console.log("User is signed in:", user);
+      addRecipeForm.style.display = "block";
+      signInMessage.style.display = "none";
+    } else {
+      console.log("No user is signed in");
+      addRecipeForm.style.display = "none";
+      signInMessage.style.display = "block";
+    }
   });
 
-  const form = document.getElementById("add-recipe-form");
+  // Handle image pasting
+  recipeImageInput.addEventListener("paste", (e) => {
+    const items = e.clipboardData.items;
+    for (let item of items) {
+      if (item.type.startsWith("image/")) {
+        const file = item.getAsFile();
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          recipeImageInput.value = event.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  });
 
-  form.addEventListener("submit", (e) => {
+  addRecipeForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const recipeName = document.getElementById("recipe-name").value;
@@ -48,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .add(newRecipe)
       .then(() => {
         alert("Recipe added successfully!");
-        form.reset();
+        addRecipeForm.reset();
       })
       .catch((error) => {
         console.error("Error adding recipe:", error);

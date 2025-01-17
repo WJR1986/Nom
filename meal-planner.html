@@ -8,40 +8,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="styles.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Recipe App</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="add-recipe.html">Add Recipe</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="meal-planner.html">Meal Planner</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <div id="meal-planner" class="container my-4">
-        <h3 class="text-center">Your Weekly Meal Plan</h3>
-        <div id="mealPlanList" class="list-group">
-            <!-- Meal plan summary will be dynamically populated -->
-        </div>
+    <div class="container">
+        <header class="d-flex flex-column align-items-center py-3">
+            <a class="navbar-brand pb-2" href="#">Will's Recipe App</a>
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="index.html" class="nav-link" aria-current="page">Home</a></li>
+                <li class="nav-item"><a href="add-recipe.html" class="nav-link">Add Recipe</a></li>
+                <li class="nav-item"><a href="meal-planner.html" class="nav-link active">Meal Planner</a></li>
+            </ul>
+        </header>
     </div>
-    <div class="text-center my-4">
-        <button id="delete-plan-btn" class="btn btn-danger">Clear Meal Plan</button>
-        <button id="generate-shopping-list-btn" class="btn btn-primary">Generate Shopping List</button>
+
+    <div class="container my-4">
+        <div id="alert-container"></div>
+        <h3 class="text-center">Meal Planner</h3>
+        <div id="meal-planner" class="row"></div>
+        <button id="generate-shopping-list-btn" class="btn btn-primary mt-3">Generate Shopping List</button>
+        <button id="delete-plan-btn" class="btn btn-danger mt-3">Clear Meal Plan</button>
+        <button id="save-plan-btn" class="btn btn-success mt-3">Save Meal Plan</button>
+        <button id="load-plan-btn" class="btn btn-info mt-3">Load/Remove Meal Plan</button>
     </div>
 
     <div class="modal fade" id="recipeModal" tabindex="-1" aria-labelledby="recipeModalLabel" aria-hidden="true">
@@ -73,12 +65,58 @@
         </div>
     </div>
 
+    <div class="modal fade" id="loadMealPlanModal" tabindex="-1" aria-labelledby="loadMealPlanModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loadMealPlanModalLabel">Load Meal Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="loadMealPlanModalBody">
+                    <!-- Meal plan will be dynamically populated -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="load-meal-plan-btn">Load Meal Plan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="nameMealPlanModal" tabindex="-1" aria-labelledby="nameMealPlanModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="nameMealPlanModalLabel">Name Your Meal Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="mealPlanName" class="form-control" placeholder="Enter meal plan name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveMealPlanNameBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="meal-planner.js"></script>
+    <script type="module" src="meal-planner.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.slim.min.js"
+        integrity="sha512-sNylduh9fqpYUK5OYXWcBleGzbZInWj8yCJAU57r1dpSK9tP2ghf/SRYCMj+KsslFkCOt3TvJrX2AV/Gc3wOqA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js"
+        integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
+        integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
+<footer class="text-center mt-5">
+    <p>&copy; 2025 Will's Recipe App</p>
+</footer>
 
 </html>
