@@ -1,9 +1,21 @@
+* {
+  font-family: "Roboto", sans-serif;
+  /* background-color: lightskyblue; */
+}
+
+#add-recipe-form {
+  padding: 1rem;
+  background-color: lightblue;
+  border-radius: 8px;
+}
+
 .recipe-image {
   max-width: 75%;
   max-height: 250px; /* Adjust the max-height as needed */
   object-fit: contain; /* This ensures the entire image fits within the area without being cropped */
   display: block; /* Ensure the image is a block-level element */
   margin: 0 auto; /* Center the image horizontally */
+  padding-top: 0.5rem;
 }
 
 /* Change the color of non-active nav links */
@@ -30,6 +42,11 @@
 /* .delete-recipe-btn {
   color: black;
 } */
+
+.btn-outline-secondary {
+  color: darkslategrey;
+  border-color: darkslategray !important;
+}
 
 /* Mobile meal planner view font colour */
 @media (max-width: 767px) {
@@ -80,5 +97,11 @@
   .autocomplete-suggestions {
     width: 100% !important;
     top: 60% !important; /* Ensure the suggestions appear below the input */
+  }
+
+  #search-bar {
+    width: 100% !important;
+    top: 60% !important; /* Ensure the suggestions appear below the input */
+    margin-bottom: 0.5rem;
   }
 }

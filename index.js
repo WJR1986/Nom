@@ -108,9 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
                   </div>
                   <div class="card-body">
                     <h5 class="card-title">${recipe.name}</h5>
-                    <p class="card-text">Ingredients: ${recipe.ingredients.join(
-                      ", "
-                    )}</p>
+                    <h6>Ingredients:</h6>
+                    <ul>
+                      ${recipe.ingredients
+                        .map((ingredient) => `<li>${ingredient}</li>`)
+                        .join("")}
+                    </ul>
                     <button class="btn btn-outline-dark view-recipe-btn" data-recipe-id="${
                       recipe.id
                     }">
