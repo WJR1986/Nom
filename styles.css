@@ -1,7 +1,9 @@
 .recipe-image {
-  max-width: 100%;
+  max-width: 75%;
   max-height: 250px; /* Adjust the max-height as needed */
   object-fit: contain; /* This ensures the entire image fits within the area without being cropped */
+  display: block; /* Ensure the image is a block-level element */
+  margin: 0 auto; /* Center the image horizontally */
 }
 
 /* Change the color of non-active nav links */
@@ -23,6 +25,11 @@
 .nav-link.active:hover {
   color: darkslategray; /* Change this to your desired color */
 }
+
+/* delete recipe button on home page */
+/* .delete-recipe-btn {
+  color: black;
+} */
 
 /* Mobile meal planner view font colour */
 @media (max-width: 767px) {
@@ -48,4 +55,30 @@
 
 .logo-pop-in {
   animation: popIn 0.5s ease-out;
+}
+
+/* ingredients input container */
+
+/* Ensure the ingredients container is full width on mobile */
+@media (max-width: 768px) {
+  .input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ingredient-quantity,
+  .ingredient-unit,
+  .ingredient-input,
+  .ingredient-notes,
+  .remove-ingredient-btn,
+  .step-input,
+  .remove-step-btn {
+    width: 100% !important;
+    margin-bottom: 10px;
+  }
+
+  .autocomplete-suggestions {
+    width: 100% !important;
+    top: 60% !important; /* Ensure the suggestions appear below the input */
+  }
 }

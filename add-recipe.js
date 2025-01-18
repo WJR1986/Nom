@@ -30,10 +30,21 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  let ingredientsList = [];
+
+  // Load the JSON file
+  fetch("unique_ingredients.json")
+    .then((response) => response.json())
+    .then((data) => {
+      ingredientsList = data.ingredients;
+      // Apply auto-suggestion to the default ingredient input on page load
+      applyAutoSuggestion(document.querySelector(".ingredient-input"));
+    })
+    .catch((error) => console.error("Error loading ingredients:", error));
+
   function addIngredientInputGroup() {
-    console.log("Adding ingredient input group");
     const ingredientInputGroup = document.createElement("div");
-    ingredientInputGroup.className = "input-group mb-2";
+    ingredientInputGroup.className = "input-group mb-2 position-relative"; // Add position-relative class
     ingredientInputGroup.innerHTML = `
       <input type="text" class="form-control ingredient-quantity" placeholder="Quantity" required>
       <select class="form-select ingredient-unit">
@@ -47,14 +58,58 @@ document.addEventListener("DOMContentLoaded", () => {
         <option value="pcs">pieces</option>
       </select>
       <input type="text" class="form-control ingredient-input" placeholder="Enter ingredient" required>
+      <div class="autocomplete-suggestions"></div>
       <input type="text" class="form-control ingredient-notes" placeholder="Notes (e.g., chopped)">
       <button type="button" class="btn btn-outline-secondary remove-ingredient-btn">&times;</button>
     `;
     ingredientsContainer.appendChild(ingredientInputGroup);
+
+    // Apply auto-suggestion to the new ingredient input
+    applyAutoSuggestion(
+      ingredientInputGroup.querySelector(".ingredient-input")
+    );
+  }
+
+  function applyAutoSuggestion(ingredientInput) {
+    const suggestionsContainer = ingredientInput.nextElementSibling;
+
+    ingredientInput.addEventListener("input", () => {
+      const query = ingredientInput.value.toLowerCase();
+      suggestionsContainer.innerHTML = "";
+      if (query.length > 0) {
+        const filteredIngredients = ingredientsList.filter((ingredient) =>
+          ingredient.toLowerCase().includes(query)
+        );
+        filteredIngredients.forEach((ingredient) => {
+          const suggestionItem = document.createElement("div");
+          suggestionItem.className = "suggestion-item";
+          suggestionItem.textContent = ingredient;
+          suggestionItem.addEventListener("click", () => {
+            ingredientInput.value = ingredient;
+            suggestionsContainer.innerHTML = "";
+          });
+          suggestionsContainer.appendChild(suggestionItem);
+        });
+      }
+    });
+
+    // Style the suggestions container
+    suggestionsContainer.style.position = "absolute";
+    suggestionsContainer.style.backgroundColor = "#fff";
+    suggestionsContainer.style.border = "1px solid #ccc";
+    suggestionsContainer.style.zIndex = "1000";
+    suggestionsContainer.style.width = "100%";
+    suggestionsContainer.style.maxHeight = "150px"; // Set max height
+    suggestionsContainer.style.overflowY = "auto"; // Enable vertical scrolling
+
+    // Position the suggestions container below the input field
+    ingredientInput.addEventListener("focus", () => {
+      const rect = ingredientInput.getBoundingClientRect();
+      suggestionsContainer.style.top = `${ingredientInput.offsetHeight}px`;
+    });
   }
 
   addIngredientBtn.addEventListener("click", () => {
-    console.log("Add Ingredient button clicked");
     addIngredientInputGroup();
   });
 

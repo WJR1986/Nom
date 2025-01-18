@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     }" class="card-img-top img-fluid recipe-image" alt="${
         recipe.name
       }">
-                    <button class="btn btn-danger btn-sm delete-recipe-btn" data-recipe-id="${
+                    <button class="btn btn-outline-danger btn-sm delete-recipe-btn" data-recipe-id="${
                       recipe.id
                     }" style="position: absolute; top: 5px; right: 5px;">&times;</button>
                   </div>
