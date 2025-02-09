@@ -21,8 +21,10 @@
                 style="max-width: 250px;">
             <ul class="nav nav-tabs">
                 <li class="nav-item"><a href="index.html" class="nav-link" aria-current="page">Home</a></li>
-                <li class="nav-item"><a href="add-recipe.html" class="nav-link active">Add Recipe</a></li>
+                <li class="nav-item"><a href="#" class="nav-link active">Add Recipe</a></li>
                 <li class="nav-item"><a href="meal-planner.html" class="nav-link">Meal Planner</a></li>
+                <li class="nav-item"><a href="pantry.html" class="nav-link">Pantry</a></li>
+                <li class="nav-item"><a href="us-cup-conversion.html" class="nav-link">USA Cup Conversion</a></li>
             </ul>
         </header>
     </div>
@@ -47,8 +49,9 @@
                     <div class="input-group mb-2">
                         <input type="text" class="form-control ingredient-quantity" placeholder="Quantity" required>
                         <select class="form-select ingredient-unit">
-                            <option value="">Unit</option>
+                            <option value="x">x</option>
                             <option value="g">grams</option>
+                            <option value="kg">kg</option>
                             <option value="ml">mls</option>
                             <option value="litres">litres</option>
                             <option value="cups">cups</option>
@@ -60,20 +63,20 @@
                             required>
                         <div class="autocomplete-suggestions"></div>
                         <input type="text" class="form-control ingredient-notes" placeholder="Notes (e.g., chopped)">
-                        <button type="button" class="btn btn-outline-secondary remove-ingredient-btn">&times;</button>
+                        <button type="button" class="btn btn-outline-light remove-ingredient-btn">&times;</button>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-secondary" id="add-ingredient-btn">Add Ingredient</button>
+                <button type="button" class="btn btn-outline-light" id="add-ingredient-btn">Add Ingredient</button>
             </div>
             <div class="mb-3">
                 <label for="recipe-steps" class="form-label">Steps</label>
                 <div id="steps-container">
                     <div class="input-group mb-2">
                         <input type="text" class="form-control step-input" placeholder="Enter step" required>
-                        <button type="button" class="btn btn-outline-secondary remove-step-btn">&times;</button>
+                        <button type="button" class="btn btn-outline-light remove-step-btn">&times;</button>
                     </div>
                 </div>
-                <button type="button" class="btn btn-outline-secondary" id="add-step-btn">Add Step</button>
+                <button type="button" class="btn btn-outline-light" id="add-step-btn">Add Step</button>
             </div>
             <div class="mb-3">
                 <label for="preparation-time" class="form-label">Preparation Time</label>
@@ -83,7 +86,7 @@
                 <label for="cooking-time" class="form-label">Cooking Time</label>
                 <input type="text" class="form-control" id="cooking-time">
             </div>
-            <button type="submit" class="btn btn-outline-secondary">Add Recipe</button>
+            <button type="submit" class="btn btn-outline-light">Add Recipe</button>
         </form>
     </div>
 

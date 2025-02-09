@@ -48,8 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
     ingredientInputGroup.innerHTML = `
       <input type="text" class="form-control ingredient-quantity" placeholder="Quantity" required>
       <select class="form-select ingredient-unit">
-        <option value="">Unit</option>
+        <option value="x">x</option>
         <option value="g">grams</option>
+        <option value="kg">kg</option>
         <option value="ml">mls</option>
         <option value="litres">litres</option>
         <option value="cups">cups</option>
@@ -90,6 +91,16 @@ document.addEventListener("DOMContentLoaded", () => {
           });
           suggestionsContainer.appendChild(suggestionItem);
         });
+      }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener("click", (event) => {
+      if (
+        !suggestionsContainer.contains(event.target) &&
+        event.target !== ingredientInput
+      ) {
+        suggestionsContainer.innerHTML = "";
       }
     });
 

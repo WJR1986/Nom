@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
     recipes.forEach((recipe) => {
       const recipeCard = `
               <div class="col-md-4">
-                <div class="card">
+                <div class="card mb-2">
                   <div class="card-img-top-container">
                     <img src="${
                       recipe.image

@@ -3,10 +3,28 @@
   /* background-color: lightskyblue; */
 }
 
+body {
+  background-color: lightsteelblue;
+}
+
+.modal-title,
+.modal-content,
+.modal-body {
+  color: #1e201e;
+}
+
 #add-recipe-form {
   padding: 1rem;
-  background-color: lightblue;
+  /* background-color: #3c3d37; */
   border-radius: 8px;
+}
+
+/* recipes container */
+#recipes-container {
+  padding: 1rem;
+  /* background-color: #3c3d37; */
+  border-radius: 8px;
+  /* border: 1px solid lightgray; */
 }
 
 .recipe-image {
@@ -19,13 +37,15 @@
 }
 
 /* Change the color of non-active nav links */
-.nav-link {
-  color: darkslategray; /* Change this to your desired color */
+.nav-link,
+#search-button {
+  color: black;
 }
 
 /* Hover color */
 .nav-link:hover {
-  color: black; /* Change this to your desired color */
+  color: white !important; /* Change this to your desired color */
+  transition: 0.5s;
 }
 
 /* Ensure the active nav link retains its default or desired styling */
@@ -35,7 +55,7 @@
 
 /* Hover color */
 .nav-link.active:hover {
-  color: darkslategray; /* Change this to your desired color */
+  color: steelblue !important; /* Change this to your desired color */
 }
 
 /* delete recipe button on home page */
@@ -53,6 +73,12 @@
   .btn-link.custom-mobile-color {
     color: black; /* Change this to your desired color */
     text-decoration: none;
+  }
+  /* recipes container */
+  #recipes-container {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+    padding: 0.5rem 0;
   }
 }
 /* Logo animation */
@@ -104,4 +130,9 @@
     top: 60% !important; /* Ensure the suggestions appear below the input */
     margin-bottom: 0.5rem;
   }
+}
+
+/* pantry auto complete dropdown font colour */
+.suggestion-item {
+  color: black !important;
 }
